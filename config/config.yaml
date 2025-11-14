@@ -1,0 +1,116 @@
+steps:
+  clean:
+    min_length: 50          # drop sequences shorter than 50 aa
+    remove_duplicates: true
+  embedding:
+    model: protbert         # name of the pre-trained model
+    batch_size: 16
+  pca:
+    n_components: 2
+
+
+datasets:
+  mts:
+    path: data/processed/01-cleaned-for-length/MTS_dataset/MTS_with_sequences_acyclic_pl.xlsx
+    file_type: excel       # one of: csv, tsv, excel
+    sheet_name: Sheet1     # only for Excel files
+    # map from raw colname → standard colname
+    columns:
+      UNIPROT/Genbank: seq_id
+      Organism:    taxon
+      seq:   sequence
+      acyclic total: acyclic
+
+  sts:
+    path: data/processed/01-cleaned-for-length/STS_dataset/STS_with_sequences_pl.xlsx
+    file_type: excel
+    sheet_name: Sheet1
+    columns:
+      UniProt ID:       seq_id
+      Species: taxon
+      sequence: sequence
+      Major Product(s): main_product
+      First Cyclization: acyclic
+      Parent Cation: precursor_cation
+
+  dts:
+      path: data/processed/01-cleaned-for-length/diTPS_dataset/diTPS_with_sequences_pl.xlsx
+      file_type: excel
+      sheet_name: Sheet1
+      columns:
+        GenBank Accession: seq_id
+        Origin: taxon
+        sequence: sequence
+        Enzyme class: type
+        Main product 1_1: main_product
+
+  poplar:
+      path: data/processed/01-cleaned-for-length/Poplar_dataset/poplar_with_sequences_pl.xlsx
+      file_type: excel
+      sheet_name: Sheet1
+      columns:
+        GenBank Accession:       seq_id
+        species: taxon
+        sequence: sequence
+        TPS: length
+      non-standard_columns:
+        enzyme activity with FPP: fpp_product
+        enzyme activity with GPP: gpp_product
+        enzyme activity with GGPP: ggpp_product
+
+  bacterial:
+    bacterial_1:
+      path: data/processed/01-cleaned-for-length/Bacterial_dataset/bacterial_with_sequences_pl.xlsx
+      file_type: excel
+      sheet_name: Sheet1
+      columns:
+        Uniprot ID:       seq_id
+        sequence: sequence
+        Length?: length
+        Type I/II?: type
+        (Main) Product: main_product
+      non-standard_columns:
+        Genus: taxon_1
+        Species: taxon_2
+
+    bacterial_2:
+      path: data/processed/01-cleaned-for-length/Bacterial_dataset/bacterial_2_with_sequences_pl.xlsx
+      file_type: excel
+      sheet_name: Sheet1
+      columns:
+        Accession No.:  seq_id
+        Organism: taxon
+        sequence: sequence
+        Main Product: main_product
+  # add your other datasets here…
+
+required_columns:
+  - seq_id
+  - taxon
+  - sequence
+  - type
+  - main_product
+  - length
+  - acyclic
+  - precursor_cation
+
+paths:
+  final_processed_combined_dataset: data/processed/03-combined-with-identifiers/combined.fasta
+  nmd_folder: /home/fbaxevanis/project/data/processed/07-structure-related/nmd
+  msa_folder: /home/fbaxevanis/project/data/processed/11-msas
+  cluster_folder: /home/fbaxevanis/project/data/processed/10-mmseqs
+
+problematic_seq_ids:
+  tr|A0A2A3HMH3|A0A2A3HMH3_9ACTN: UPI000BD0EC14
+  tr|A5A8G0|A5A8G0_PHYPA: sp|A5A8G0|CPSKS_PHYPA
+  tr|A0A4Y5L9K3|A0A4Y5L9K3_CANSA: sp|A0A4Y5L9K3|T16CC_CANSA
+  tr|A0A1V0QSF6|A0A1V0QSF6_CANSA: sp|A0A1V0QSF6|TS7FN_CANSA
+  tr|A0A1V0QSF3|A0A1V0QSF3_CANSA: sp|A0A1V0QSF3|TS8FN_CANSA
+  tr|A0A4Y5QVX6|A0A4Y5QVX6_CANSA: sp|A0A4Y5QVX6|T20CT_CANSA
+  tr|A0A4Y5QWA6|A0A4Y5QWA6_CANSA: sp|A0A4Y5QWA6|T18VF_CANSA
+
+duplicate_sequences:
+- A7BG60
+- P0CV95
+- B1NA83
+- F8TWD2
